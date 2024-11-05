@@ -33,12 +33,14 @@ class InertiaTestController extends Controller
             'title' => ['required', 'max:20'],
             'content' => ['required']
         ]);
-        
+
         $inertiaTest = new InertiaTest();
         $inertiaTest->title = $request->title;
         $inertiaTest->content = $request->content;
         $inertiaTest->save();
 
-        return to_route('inertia.index');
+        return to_route('inertia.index')->with([
+            'message' => '登録しました。'
+        ]);
     }
 }
