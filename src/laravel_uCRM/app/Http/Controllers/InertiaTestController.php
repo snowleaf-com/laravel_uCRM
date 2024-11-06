@@ -11,6 +11,7 @@ class InertiaTestController extends Controller
     public function index()
     {
         return Inertia::render('Inertia/Index', [
+            'blogs' => InertiaTest::all(),
             'comment' => 'メッセージ',
         ]);
     }
@@ -22,8 +23,12 @@ class InertiaTestController extends Controller
 
     public function show($id)
     {
+        // データベースからレコードを取得
+        $record = InertiaTest::findOrFail($id);
+
+        // Inertiaビューにレコードを渡す
         return Inertia::render('Inertia/Show', [
-            'id' => $id,
+            'record' => $record,
         ]);
     }
 
@@ -41,6 +46,16 @@ class InertiaTestController extends Controller
 
         return to_route('inertia.index')->with([
             'message' => '登録しました。'
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $book = InertiaTest::findOrFail($id);
+        $book->delete();
+
+        return to_route('inertia.index')->with([
+            'message' => '削除しました。'
         ]);
     }
 }
