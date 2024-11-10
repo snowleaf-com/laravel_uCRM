@@ -1,7 +1,7 @@
 <script setup>
   import { reactive } from 'vue';
   import { Inertia } from '@inertiajs/inertia';
-import { errorMessages } from 'vue/compiler-sfc';
+  import { errorMessages } from 'vue/compiler-sfc';
 
   defineProps({
     errors: Object,
