@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { nl2br } from '@/common';
 
 defineProps({
@@ -20,8 +20,7 @@ defineProps({
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                   <section class="text-gray-600 body-font relative">
-                    <form @submit.prevent="storeItem">
-                      <div class="container px-5 py-8 mx-auto">
+                    <div class="container px-5 py-8 mx-auto">
                         <div class="lg:w-1/2 md:w-2/3 mx-auto">
                           <div class="flex flex-wrap -m-2">
                             <div class="p-2 w-full">
@@ -57,12 +56,11 @@ defineProps({
                               </div>
                             </div>
                             <div class="p-2 w-full">
-                              <button class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Button</button>
+                              <Link as="button" :href="route('items.edit', {item: item.id})" class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">商品編集</Link>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </form>
+                    </div>
                   </section>
                 </div>
             </div>
