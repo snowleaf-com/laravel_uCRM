@@ -2,14 +2,21 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { nl2br } from '@/common';
+import { Inertia } from '@inertiajs/inertia';
 
 defineProps({
   item: Object
 })
+
+const deleteItem = (id) => {
+  Inertia.delete(route('items.destroy', {item: id}),{
+    onBefore: () => confirm('本当に削除しますか？')
+  });
+}
 </script>
 
 <template>
-    <Head title="商品詳細" />
+  <Head title="商品詳細" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -59,8 +66,11 @@ defineProps({
                               <Link as="button" :href="route('items.edit', {item: item.id})" class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">商品編集</Link>
                             </div>
                           </div>
+                            <div class="mt-24 p-2 w-full">
+                              <button @click="deleteItem(item.id)" class="flex mx-auto text-white bg-red-500 border-0 py-2 px-8 focus:outline-none hover:bg-red-600 rounded text-lg">削除</button>
+                            </div>
+                          </div>
                         </div>
-                    </div>
                   </section>
                 </div>
             </div>
