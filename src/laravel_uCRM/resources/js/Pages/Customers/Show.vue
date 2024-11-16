@@ -7,6 +7,12 @@ import { Head, Link } from '@inertiajs/inertia-vue3';
 defineProps({
   customer: Object
 })
+
+const deleteCustomer = (id) => {
+  Inertia.delete(route('customers.destroy', {customer: id}),{
+    onBefore: () => confirm('本当に削除しますか？')
+  });
+}
 </script>
 
 <template>
@@ -86,7 +92,7 @@ defineProps({
                               <Link as="button" :href="route('customers.edit', {customer: customer.id})" class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">顧客編集</Link>
                             </div>
                             <div class="mt-24 p-2 w-full">
-                              <button @click="deleteItem(customer.id)" class="flex mx-auto text-white bg-red-500 border-0 py-2 px-8 focus:outline-none hover:bg-red-600 rounded text-lg">削除</button>
+                              <button @click="deleteCustomer(customer.id)" class="flex mx-auto text-white bg-red-500 border-0 py-2 px-8 focus:outline-none hover:bg-red-600 rounded text-lg">削除</button>
                             </div>
                           </div>
                         </div>
