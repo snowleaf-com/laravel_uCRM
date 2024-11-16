@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { reactive } from 'vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, useForm } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
 import InputError from '@/Components/InputError.vue';
 
@@ -9,16 +9,16 @@ defineProps({
   errors: Object,
 })
 
-const form = reactive({
-  name: null,
-  kana: null,
-  tel: null,
-  email: null,
-  postcode: null,
-  address: null,
-  birthday: null,
-  gender: null,
-  memo: null,
+const form = useForm({
+  name: '',
+  kana: '',
+  tel: '',
+  email: '',
+  postcode: '',
+  address: '',
+  birthday: '',
+  gender: '',
+  memo: '',
 })
 
 const storeCustomer = () => {
