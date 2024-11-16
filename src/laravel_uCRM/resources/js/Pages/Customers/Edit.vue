@@ -1,8 +1,7 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { onMounted, ref } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import { Inertia } from '@inertiajs/inertia';
+import { Head, useForm } from '@inertiajs/inertia-vue3';
 import InputError from '@/Components/InputError.vue';
 import { Core as YubinBangoCore } from "yubinbango-core2";
 
@@ -33,7 +32,7 @@ const fetchAddress = () => {
 }
 
 const updateCustomer = (id) => {
-  Inertia.put(route('customers.update', { customer: id }), form);
+  form.put(route('customers.update', { customer: id }), form); // Inertiaを使わずにformメソッドを使う
 }
 
 onMounted(() => {
@@ -119,7 +118,12 @@ onMounted(() => {
                               </div>
                             </div>
                             <div class="p-2 w-full">
-                              <button class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">顧客編集</button>
+                              <button class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none rounded text-lg"
+                              :class="{
+                                'bg-indigo-500 hover:bg-indigo-600': !form.processing,
+                                'bg-gray-400 cursor-not-allowed': form.processing
+                              }"
+                              :disabled="form.processing">顧客編集</button>
                             </div>
                           </div>
                         </div>
