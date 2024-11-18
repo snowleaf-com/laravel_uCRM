@@ -118,12 +118,16 @@ onMounted(() => {
                               </div>
                             </div>
                             <div class="p-2 w-full">
-                              <button class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none rounded text-lg"
-                              :class="{
-                                'bg-indigo-500 hover:bg-indigo-600': !form.processing,
-                                'bg-gray-400 cursor-not-allowed': form.processing
-                              }"
-                              :disabled="form.processing">顧客編集</button>
+                              <button 
+                                class="flex mx-auto text-white border-0 py-2 px-8 focus:outline-none rounded text-lg"
+                                :class="{
+                                  'bg-indigo-500 hover:bg-indigo-600': !form.processing,
+                                  'bg-gray-400 cursor-not-allowed': form.processing
+                                }"
+                                :disabled="form.processing"
+                              >
+                                {{ form.processing ? '送信中...' : '顧客編集' }}
+                              </button>
                             </div>
                           </div>
                         </div>
