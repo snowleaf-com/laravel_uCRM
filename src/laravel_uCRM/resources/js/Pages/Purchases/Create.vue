@@ -1,6 +1,6 @@
 <script setup>
 import { getToday } from '@/common';
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 
 const props = defineProps({
   'customers' : Array,
@@ -26,11 +26,21 @@ onMounted(() => {
   })
 })
 
+const totalPrice = computed(() => {
+  let total = 0;
+  itemList.value.forEach( item => {
+    total += item.price * item.quantity
+  })
+  return total;
+})
+
 
 
 </script>
 
 <template>
+  日付<br>
+  <input type="date" name="date" v-model="form.date"><br>
   会員名
   <br>
   <select name="customer" v-model="form.customer_id">
@@ -65,6 +75,6 @@ onMounted(() => {
       </tr>
     </tbody>
   </table>
-  日付<br>
-  <input type="date" name="date" v-model="form.date">
+  <br>
+  合計: {{ totalPrice }}円
 </template>
