@@ -88,6 +88,9 @@ const storePurchase = () => {
                                   </select>
                               </div>
                             </div>
+                            <InputError v-if="errors.items" v-for="(error, index) in errors.items" 
+                            :key="index" 
+                            :message="error" />
                             <div class="mt-2 p-2 w-full mx-auto overflow-auto">
                               <table class="table-auto w-full text-left whitespace-no-wrap">
                                 <thead>
