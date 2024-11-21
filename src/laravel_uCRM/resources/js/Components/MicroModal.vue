@@ -1,16 +1,22 @@
 <script setup>
+import { ref } from 'vue';
 
+const isShow = ref(false);
+
+const toggleStatus = () => {
+  isShow.value = !isShow.value
+}
 </script>
 
 <template>
-  <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+  <div class="modal" id="modal-1" aria-hidden="true" v-show="isShow">
     <div class="modal__overlay" tabindex="-1" data-micromodal-close>
       <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
         <header class="modal__header">
           <h2 class="modal__title" id="modal-1-title">
             Micromodal
           </h2>
-          <button type="button" class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+          <button type="button" class="modal__close" aria-label="Close modal" data-micromodal-close @click="toggleStatus"></button>
         </header>
         <main class="modal__content" id="modal-1-content">
           <p>
@@ -18,11 +24,11 @@
           </p>
         </main>
         <footer class="modal__footer">
-          <button type="button" class="modal__btn modal__btn-primary">Continue</button>
-          <button type="button" class="modal__btn" data-micromodal-close aria-label="Close this dialog window">Close</button>
+          <button type="button" class="modal__btn modal__btn-primary" @click="toggleStatus">Continue</button>
+          <button type="button" class="modal__btn" data-micromodal-close aria-label="Close this dialog window" @click="toggleStatus">Close</button>
         </footer>
       </div>
     </div>
   </div>
-  <button type="button" data-micromodal-trigger="modal-1" href='javascript:;'>Open Modal Dialog</button>
+  <button type="button" data-micromodal-trigger="modal-1" href='javascript:;' @click="toggleStatus">Open Modal Dialog</button>
 </template>
