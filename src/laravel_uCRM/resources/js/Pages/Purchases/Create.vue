@@ -6,6 +6,7 @@ import { Head } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
 import InputError from '@/Components/InputError.vue';
 import { useForm } from '@inertiajs/inertia-vue3';
+import MicroModal from '@/Components/MicroModal.vue';
 
 const props = defineProps({
   errors: Object,
@@ -80,6 +81,7 @@ const storePurchase = () => {
                             </div>
                             <div class="p-2 w-full">
                               <div class="relative">
+                                <MicroModal />
                                 <label for="customer" class="leading-7 text-sm text-gray-600">会員名</label><InputError :message="errors.customer_id" />
                                   <select name="customer" v-model="form.customer_id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                     <option v-for="customer in customers" :value="customer.id" :key="customer.id">
