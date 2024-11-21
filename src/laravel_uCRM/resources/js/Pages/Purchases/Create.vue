@@ -5,6 +5,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia';
 import InputError from '@/Components/InputError.vue';
+import { useForm } from '@inertiajs/inertia-vue3';
 
 const props = defineProps({
   errors: Object,
@@ -12,7 +13,7 @@ const props = defineProps({
   items : Array
 })
 
-const form = reactive({
+const form = useForm({
   date: null,
   customer_id: null,
   status: true,
@@ -50,7 +51,7 @@ const storePurchase = () => {
       })
     } 
   })
-  Inertia.post(route('purchases.store'), form)
+  form.post(route('purchases.store'), form)
 }
 
 </script>
@@ -79,7 +80,7 @@ const storePurchase = () => {
                             </div>
                             <div class="p-2 w-full">
                               <div class="relative">
-                                <label for="customer" class="leading-7 text-sm text-gray-600">会員名</label><InputError :message="errors.customer" />
+                                <label for="customer" class="leading-7 text-sm text-gray-600">会員名</label><InputError :message="errors.customer_id" />
                                   <select name="customer" v-model="form.customer_id" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                                     <option v-for="customer in customers" :value="customer.id" :key="customer.id">
                                       {{ customer.id }} : {{ customer.name }}
@@ -128,7 +129,16 @@ const storePurchase = () => {
                               </div>
                             </div>
                             <div class="p-2 w-full">
-                              <button class="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">登録する</button>
+                              <button 
+                                class="flex mx-auto text-white border-0 py-2 px-8 focus:outline-none rounded text-lg"
+                                :class="{
+                                  'bg-indigo-500 hover:bg-indigo-600': !form.processing,
+                                  'bg-gray-400 cursor-not-allowed': form.processing
+                                }"
+                                :disabled="form.processing"
+                              >
+                                {{ form.processing ? '送信中...' : '登録する' }}
+                              </button>
                             </div>
                           </div>
                         </div>
