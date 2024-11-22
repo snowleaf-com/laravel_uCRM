@@ -21,11 +21,19 @@ class Customer extends Model
         'gender',
         'memo',
     ];
-    
-    public function scopeSearchCustomers($query, $input = null) {
-        if(!empty($input)) {
-            if(Customer::where('kana', 'like', $input . '%')->orWhere('tel', 'like', $input . '%')->exists()) {
-                return $query->where('kana', 'like', $input . '%')->orWhere('tel', 'like', $input . '%');
+
+    public function scopeSearchCustomers($query, $input = null)
+    {
+        if (!empty($input)) {
+            // kana, tel, nameのいずれかに一致するデータを検索
+            if (Customer::where('kana', 'like', $input . '%')
+                ->orWhere('tel', 'like', $input . '%')
+                ->orWhere('name', 'like', $input . '%')
+                ->exists()
+            ) {
+                return $query->where('kana', 'like', $input . '%')
+                    ->orWhere('tel', 'like', $input . '%')
+                    ->orWhere('name', 'like', $input . '%');
             }
         }
     }
