@@ -67,8 +67,8 @@ const setCustomer = (e) => {
 
 <template>
   <div class="modal" id="modal-1" ref="modal" :aria-hidden="!isShow" v-show="isShow">
-    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
-      <div class="modal__container w-2/3" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
+    <div class="modal__overlay" tabindex="-1" data-micromodal-close @click="toggleStatus">
+      <div class="modal__container w-2/3" role="dialog" aria-modal="true" aria-labelledby="modal-1-title" @click.stop>
         <header class="modal__header">
           <h2 class="modal__title" id="modal-1-title">
             顧客検索
