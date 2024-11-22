@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import Pagination from './Pagination.vue';
 
 const isShow = ref(false);
 const search = ref('');
@@ -12,6 +13,7 @@ const searchCustomers = async () => {
   try {
     const res = await axios.get(`/api/searchCustomers/?search=${search.value}`);
     customers.value = res.data; // refなのでvalueをつける！
+    console.log(customers.value);
     toggleStatus();
   } catch (e) {
     console.error(e.message);
@@ -24,9 +26,15 @@ const toggleStatus = () => {
     lastFocusedElement.value = document.activeElement; // 現在のフォーカスを記録
     modal.value?.setAttribute('aria-hidden', 'false'); // モーダルを支援技術に表示
     modal.value?.querySelector('[tabindex]').focus(); // 最初のフォーカス可能要素にフォーカス
+
+    // 背景のスクロールを無効化
+    document.body.style.overflow = 'hidden';
   } else {
     modal.value?.setAttribute('aria-hidden', 'true'); // モーダルを支援技術から隠す
     lastFocusedElement.value?.focus(); // 元の要素にフォーカスを戻す
+
+    // 背景のスクロールを有効化
+    document.body.style.overflow = '';
   }
 }
 
@@ -86,6 +94,7 @@ const setCustomer = (e) => {
             </table>
           </div>
         </main>
+        <Pagination v-if="customers.links" :links="customers.links"></Pagination>
         <footer class="modal__footer">
           <button
             type="button"
