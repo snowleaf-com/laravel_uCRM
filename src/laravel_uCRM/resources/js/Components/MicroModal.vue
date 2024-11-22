@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import Pagination from './Pagination.vue';
+import Pagination from './AsyncPagination.vue'; //非同期用ページネーション
 
 const isShow = ref(false);
 const search = ref('');
@@ -11,10 +11,24 @@ const lastFocusedElement = ref(null); // フォーカス管理用
 
 const searchCustomers = async () => {
   try {
-    const res = await axios.get(`/api/searchCustomers/?search=${search.value}`);
+    const res = await axios.get(`/api/searchCustomers/?search=${encodeURIComponent(search.value)}`);
     customers.value = res.data; // refなのでvalueをつける！
-    console.log(customers.value);
+    console.log("初期描画:" ,customers.value);
+    console.log("初期ワード:" ,search.value);
     toggleStatus();
+  } catch (e) {
+    console.error(e.message);
+  }
+};
+
+// AsyncPaginationより使われる関数
+const fetchPage = async (url) => {
+  try {
+    const fullUrl = `${url}&search=${encodeURIComponent(search.value)}`;
+    const res = await axios.get(fullUrl);
+    customers.value = res.data;      // 新しいデータで更新
+    console.log("Async内描画:" ,customers.value);
+    console.log("Async内ワード:" ,search.value);
   } catch (e) {
     console.error(e.message);
   }
@@ -94,8 +108,10 @@ const setCustomer = (e) => {
             </table>
           </div>
         </main>
-        <Pagination v-if="customers.links" :links="customers.links"></Pagination>
-        <footer class="modal__footer">
+        <div class="flex justify-center mt-4 mb-4">
+          <Pagination v-if="customers.links" :links="customers.links" @change-page="fetchPage" />
+        </div>
+        <footer class="modal__footer flex justify-center mt-4 mb-4">
           <button
             type="button"
             class="modal__btn"
