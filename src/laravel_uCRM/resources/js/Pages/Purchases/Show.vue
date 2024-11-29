@@ -2,7 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { onMounted } from 'vue';
 import { Head } from '@inertiajs/vue3';
-import InputError from '@/Components/InputError.vue';
+import { Link } from '@inertiajs/inertia-vue3';
 import dayjs from 'dayjs';
 
 const props = defineProps({
@@ -103,11 +103,13 @@ onMounted(() => {
                             </div>
 
                             <div class="p-2 w-full">
-                              <button 
+                              <Link as="button" :href="route('purchases.edit', {
+                                purchase: props.order[0].id
+                              })"
                                 class="flex mx-auto text-white border-0 py-2 px-8 focus:outline-none rounded text-lg bg-indigo-500 hover:bg-indigo-600"
                               >
                                 編集する
-                              </button>
+                            </Link>
                             </div>
                           </div>
                         </div>
