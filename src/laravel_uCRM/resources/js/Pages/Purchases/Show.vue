@@ -102,7 +102,7 @@ onMounted(() => {
                               </div>
                             </div>
 
-                            <div class="p-2 w-full">
+                            <div class="p-2 w-full" v-if="props.order[0].status == true">
                               <Link as="button" :href="route('purchases.edit', {
                                 purchase: props.order[0].id
                               })"
