@@ -4,6 +4,7 @@ import { onMounted } from 'vue';
 import { Head } from '@inertiajs/vue3';
 import { Link } from '@inertiajs/inertia-vue3';
 import dayjs from 'dayjs';
+import FlashMessage from '@/Components/FlashMessage.vue';
 
 const props = defineProps({
   items : Array,
@@ -31,6 +32,7 @@ onMounted(() => {
                   <section class="text-gray-600 body-font relative">
                     <form @submit.prevent="storePurchase">
                       <div class="container px-5 py-8 mx-auto">
+                        <FlashMessage />
                         <div class="lg:w-1/2 md:w-2/3 mx-auto">
                           <div class="flex flex-wrap -m-2">
                             <div class="p-2 w-full">
