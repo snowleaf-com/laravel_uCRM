@@ -13,7 +13,7 @@ class UpdatePurchaseRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,10 @@ class UpdatePurchaseRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'status' => ['required', 'boolean'],
+            'items' => ['required', 'array', 'min:1'], // itemsは必須の配列で、少なくとも1つの要素が必要
+            'items.*.id' => ['required', 'exists:items,id'], // 各itemのIDが必須で、存在するもの
+            'items.*.quantity' => ['required', 'integer', 'min:1'], // quantityは1以上の整数が必要
         ];
     }
 }
