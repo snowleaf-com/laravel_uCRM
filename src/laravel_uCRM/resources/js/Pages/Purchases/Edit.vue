@@ -13,6 +13,7 @@ const props = defineProps({
 })
 
 const form = useForm({
+  id: props.order[0].id,
   date: dayjs(props.order[0].created_at).format("YYYY-MM-DD"),
   customer_id: props.order[0].customer_id,
   status: props.order[0].status,
@@ -41,7 +42,7 @@ const totalPrice = computed(() => {
   return total;
 })
 
-const storePurchase = () => {
+const updatePurchase = (id) => {
   itemList.value.forEach( item => {
     if( item.quantity > 0) {
       form.items.push({
@@ -50,7 +51,7 @@ const storePurchase = () => {
       })
     } 
   })
-  form.post(route('purchases.store'), form)
+  form.put(route('purchases.update', { purchase: id }), form );
 }
 
 </script>
@@ -67,7 +68,7 @@ const storePurchase = () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                   <section class="text-gray-600 body-font relative">
-                    <form @submit.prevent="storePurchase">
+                    <form @submit.prevent="updatePurchase(form.id)">
                       <div class="container px-5 py-8 mx-auto">
                         <div class="lg:w-1/2 md:w-2/3 mx-auto">
                           <div class="flex flex-wrap -m-2">
@@ -146,7 +147,7 @@ const storePurchase = () => {
                                 }"
                                 :disabled="form.processing"
                               >
-                                {{ form.processing ? '送信中...' : '登録する' }}
+                                {{ form.processing ? '送信中...' : '更新する' }}
                               </button>
                             </div>
                           </div>
