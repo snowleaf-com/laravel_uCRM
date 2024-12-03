@@ -1,6 +1,38 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
+import { useForm } from '@inertiajs/inertia-vue3';
+import { getToday } from '@/common';
+import { onMounted } from 'vue';
+import axios from 'axios';
+
+
+onMounted(() => {
+    form.startDate = getToday()
+    form.endDate = getToday()
+})
+
+const form = useForm({
+    startDate: null,
+    endDate: null,
+    type: 'perDay'
+})
+
+const getData = async () => {
+    try {
+        await axios.get('/api/analysis', {
+            params: {
+                startDate: form.startDate,
+                endDate: form.endDate,
+                type: form.type
+            }
+        }).then( res => {
+            console.log(res.data)
+        })
+    } catch(e) {
+        console.log(e.message)
+    }
+}
 </script>
 
 <template>
@@ -14,7 +46,21 @@ import { Head } from '@inertiajs/vue3';
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">データ分析</div>
+                    <div class="p-6 text-gray-900">
+                        <form @submit.prevent="getData">
+                            From: <input type="date" name="startDate" v-model="form.startDate">
+                            To: <input type="date" name="endDate" v-model="form.endDate"><br>
+                            <button 
+                                class="flex mx-auto text-white border-0 py-2 px-8 focus:outline-none rounded text-lg"
+                                :class="{
+                                'bg-indigo-500 hover:bg-indigo-600': !form.processing,
+                                'bg-gray-400 cursor-not-allowed': form.processing
+                                }"
+                                :disabled="form.processing"
+                            >
+                                {{ form.processing ? '送信中...' : '分析する' }}</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
