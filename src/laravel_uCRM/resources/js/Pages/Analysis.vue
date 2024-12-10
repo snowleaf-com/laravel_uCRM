@@ -6,7 +6,7 @@ import { getToday } from '@/common';
 import { onMounted } from 'vue';
 import axios from 'axios';
 import { ref } from 'vue';
-
+import dayjs from 'dayjs';
 
 onMounted(() => {
     form.startDate = getToday()
@@ -53,19 +53,28 @@ const getData = async () => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">
-                        <form @submit.prevent="getData">
-                            From: <input type="date" name="startDate" v-model="form.startDate">
-                            To: <input type="date" name="endDate" v-model="form.endDate"><br>
-                            <button 
-                                class="flex mx-auto text-white border-0 py-2 px-8 focus:outline-none rounded text-lg"
-                                :class="{
-                                'bg-indigo-500 hover:bg-indigo-600': !form.processing,
-                                'bg-gray-400 cursor-not-allowed': form.processing
-                                }"
-                                :disabled="form.processing"
-                            >
-                                {{ form.processing ? '送信中...' : '分析する' }}</button>
-                        </form>
+                        <div class="flex justify-center items-center mb-4">
+                            <form @submit.prevent="getData" class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <label for="startDate" class="mr-2">From:</label>
+                                    <input type="date" id="startDate" name="startDate" v-model="form.startDate" class="border p-2 rounded">
+                                </div>
+                                <div class="flex items-center">
+                                    <label for="endDate" class="mr-2">To:</label>
+                                    <input type="date" id="endDate" name="endDate" v-model="form.endDate" class="border p-2 rounded">
+                                </div>
+                                <button 
+                                    class="text-white border-0 py-2 px-8 focus:outline-none rounded text-lg"
+                                    :class="{
+                                        'bg-indigo-500 hover:bg-indigo-600': !form.processing,
+                                        'bg-gray-400 cursor-not-allowed': form.processing
+                                    }"
+                                    :disabled="form.processing"
+                                >
+                                    {{ form.processing ? '送信中...' : '分析する' }}
+                                </button>
+                            </form>
+                        </div>
                         <div class="lg:w-2/3 w-full mx-auto overflow-auto" v-show="data.data">
                             <table class="table-auto w-full text-left whitespace-no-wrap">
                                 <thead>
@@ -76,8 +85,8 @@ const getData = async () => {
                                 </thead>
                                 <tbody>
                                     <tr v-for="item in data.data" :key="item.date">
-                                        <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.date }}</td>
-                                        <td class="border-b-2 border-gray-200 px-4 py-3">{{ item.total }}</td>
+                                        <td class="border-b-2 border-gray-200 px-4 py-3">{{ dayjs(item.date).format('YYYY年MM月DD日') }}</td>
+                                        <td class="border-b-2 border-gray-200 px-4 py-3">{{ Number(item.total).toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' }) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
