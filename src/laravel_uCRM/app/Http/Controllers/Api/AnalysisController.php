@@ -18,17 +18,24 @@ class AnalysisController extends Controller
             $subQuery
                 ->where('status', true)
                 ->groupBy('id')
-                ->selectRaw('id, sum(subtotal) as totalPerPurchase, DATE_FORMAT(created_at, "%Y%m%d") as date');
+                ->selectRaw('id, SUM(subtotal) AS totalPerPurchase, DATE_FORMAT(created_at, "%Y%m%d") AS date')
+                ->groupBy('date');
 
             $data = DB::table($subQuery)
                     ->groupBy('date')
                     ->selectRaw('date, sum(totalPerPurchase) as total')
+                    ->orderBy('date', 'asc')
                     ->get();
+
+            $labels = $data->pluck('date');
+            $totals = $data->pluck('total');
         }
 
         return response()->json([
             'data' => $data,
-            'type' => $request->type
+            'type' => $request->type,
+            'labels' => $labels,
+            'totals' => $totals
         ], Response::HTTP_OK);
     }
 }

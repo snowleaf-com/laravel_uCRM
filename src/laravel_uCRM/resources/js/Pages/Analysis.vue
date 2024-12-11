@@ -7,6 +7,7 @@ import { onMounted } from 'vue';
 import axios from 'axios';
 import { ref } from 'vue';
 import dayjs from 'dayjs';
+import Chart from '@/Components/Chart.vue';
 
 onMounted(() => {
     form.startDate = getToday()
@@ -19,8 +20,11 @@ const form = useForm({
     type: 'perDay'
 })
 
-const data = ref(
-    {data: null}
+const data = ref({
+        data: null,
+        labels: null,
+        totals: null
+    }
 );
 
 const getData = async () => {
@@ -33,7 +37,9 @@ const getData = async () => {
             }
         }).then( res => {
             data.value.data = res.data.data
-            console.log(data);
+            data.value.labels = res.data.labels
+            data.value.totals = res.data.totals
+            // console.log(data);
         })
     } catch(e) {
         console.log(e.message)
@@ -75,6 +81,9 @@ const getData = async () => {
                                 </button>
                             </form>
                         </div>
+
+                        <Chart :data="data" />
+
                         <div class="lg:w-2/3 w-full mx-auto overflow-auto" v-show="data.data">
                             <table class="table-auto w-full text-left whitespace-no-wrap">
                                 <thead>
