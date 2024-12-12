@@ -44,6 +44,6 @@ const barData = ref({
 
 <template>
 <div v-show="props.data.labels" class="mb-8">
-  <BarChart :chartData="barData" />
+  <BarChart :chartData="barData" :height="200" />
 </div>
 </template>
