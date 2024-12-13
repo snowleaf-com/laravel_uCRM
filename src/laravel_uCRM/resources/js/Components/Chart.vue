@@ -12,14 +12,29 @@ const labels = computed(() => {
   // labels を取得（デフォルト値は空配列）
   const rawLabels = props.data?.labels || [];
 
+  console.log(rawLabels)
+  
   // 各ラベルを日付形式に変換
-  const dayFormatted = rawLabels.map(label => {
-    return dayjs(label).isValid() ? dayjs(label).format('YYYY年MM月DD日') : label;
+  const formattedLabels = rawLabels.map((label) => {
+    if (label.length === 8) {
+      // ラベルが YYYY-MM-DD の場合
+      return dayjs(label).format('YYYY年MM月DD日');
+    } else if (label.length === 6) {
+      // ラベルが YYYY-MM の場合
+      return dayjs(label).format('YYYY年MM月');
+    } else if (label.length === 4) {
+      // ラベルが YYYY の場合
+      return dayjs(label).format('YYYY年');
+    } else {
+      // それ以外の場合はそのまま返す
+      return label;
+    }
   });
 
-  console.log("フォーマット後の labels:", dayFormatted); // デバッグ用
-  return dayFormatted;
+  console.log("フォーマット後の labels:", formattedLabels); // デバッグ用
+  return formattedLabels;
 });
+
 
 const totals = computed(() => {
    const value = props.data?.totals || ""; // 初期値として空文字列を設定
