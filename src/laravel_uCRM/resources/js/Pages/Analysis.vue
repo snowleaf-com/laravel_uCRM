@@ -9,9 +9,6 @@ import { ref } from 'vue';
 import dayjs from 'dayjs';
 import Chart from '@/Components/Chart.vue';
 
-// <!-- TODO: リスト表示の日付を日別・月別・年別にする -->
-
-
 onMounted(() => {
   form.startDate = getToday()
   form.endDate = getToday()
@@ -29,9 +26,23 @@ const data = ref({
   totals: null
 })
 
-watch(() => form.endDate, (newValue) => {
-  console.log(newValue)
-})
+const formatDate = (val) => {
+  if (!val) return '';
+
+  if (val.length === 8) {
+    // ラベルが YYYY-MM-DD の場合
+    return dayjs(val).format('YYYY年MM月DD日');
+  } else if (val.length === 6) {
+    // ラベルが YYYY-MM の場合
+    return dayjs(val, 'YYYY-MM').format('YYYY年MM月');
+  } else if (val.length === 4) {
+    // ラベルが YYYY の場合
+    return dayjs(val, 'YYYY').format('YYYY年');
+  } else {
+    // それ以外の場合はそのまま返す
+    return val;
+  }
+}
 
 watch(
   () => form.type, // 監視対象: form.type
@@ -57,7 +68,7 @@ watch(
 
 const getData = async () => {
   try {
-        // startDate と endDate を加工する
+    // startDate と endDate を加工する
     const adjustedStartDate = computed(() => {
       if (!form.startDate) return null;
 
@@ -87,13 +98,7 @@ const getData = async () => {
       }
       return endDateStr; // YYYY-MM-DD の場合はそのまま
     });
-
-    console.log("送信されるパラメータ:", {
-      startDate: adjustedStartDate.value,
-      endDate: adjustedEndDate.value,
-      type: form.type,
-    });
-
+    
     await axios.get('/api/analysis', {
       params: {
         startDate: adjustedStartDate.value,
@@ -224,13 +229,13 @@ const getData = async () => {
               <table class="table-auto w-full text-left whitespace-no-wrap">
                 <thead>
                   <tr>
-                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">年月日</th>
+                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">期間</th>
                     <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">金額</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="item in data.data" :key="item.date">
-                    <td class="border-b-2 border-gray-200 px-4 py-3">{{ dayjs(item.date).format('YYYY年MM月DD日') }}</td>
+                    <td class="border-b-2 border-gray-200 px-4 py-3">{{ formatDate(item.date) }}</td>
                     <td class="border-b-2 border-gray-200 px-4 py-3">{{ Number(item.total).toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' }) }}</td>
                   </tr>
                 </tbody>
