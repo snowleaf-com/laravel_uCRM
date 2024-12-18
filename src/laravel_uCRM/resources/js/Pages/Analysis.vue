@@ -8,6 +8,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 import dayjs from 'dayjs';
 import Chart from '@/Components/Chart.vue';
+import ResultTable from '@/Components/ResultTable.vue';
 
 onMounted(() => {
   form.startDate = getToday()
@@ -25,24 +26,6 @@ const data = ref({
   labels: null,
   totals: null
 })
-
-const formatDate = (val) => {
-  if (!val) return '';
-
-  if (val.length === 8) {
-    // ラベルが YYYY-MM-DD の場合
-    return dayjs(val).format('YYYY年MM月DD日');
-  } else if (val.length === 6) {
-    // ラベルが YYYY-MM の場合
-    return dayjs(val, 'YYYY-MM').format('YYYY年MM月');
-  } else if (val.length === 4) {
-    // ラベルが YYYY の場合
-    return dayjs(val, 'YYYY').format('YYYY年');
-  } else {
-    // それ以外の場合はそのまま返す
-    return val;
-  }
-}
 
 watch(
   () => form.type, // 監視対象: form.type
@@ -108,9 +91,10 @@ const getData = async () => {
     }).then( res => {
       data.value.data = res.data.data
       data.value.totals = res.data.totals
+      data.value.type = res.data.type
 
       // `form.type` によって `labels` を加工する
-      if (form.type === 'perDay') {
+      if (form.type === 'perDay' || form.type === 'decile') {
         data.value.labels = res.data.labels; // そのまま使う
 
       } else if (form.type === 'perMonth') {
@@ -151,6 +135,7 @@ const getData = async () => {
               <input type="radio" v-model="form.type" id="perDay" value="perDay" checked><label class="mr-4 ml-1" for="perDay">日別</label>
               <input type="radio" v-model="form.type" id="perMonth" value="perMonth"><label class="mr-4 ml-1" for="perMonth">月別</label>
               <input type="radio" v-model="form.type" id="perYear" value="perYear"><label class="mr-4 ml-1" for="perYear">年別</label>
+              <input type="radio" v-model="form.type" id="decile" value="decile"><label class="mr-4 ml-1" for="decile">デシル分析</label>
             </div>
             <div class="flex justify-center items-center mb-4">
 
@@ -221,26 +206,34 @@ const getData = async () => {
                 </button>
               </form>
 
+              <!-- デシル分析検索 -->
+              <form @submit.prevent="getData" class="flex items-center space-x-4"
+              v-if="form.type === 'decile'">
+                <div class="flex items-center">
+                  <label for="startDate" class="mr-2">From:</label>
+                  <input type="date" id="startDate" name="startDate" v-model="form.startDate" class="border p-2 rounded">
+                </div>
+                <div class="flex items-center">
+                  <label for="endDate" class="mr-2">To:</label>
+                  <input type="date" id="endDate" name="endDate" v-model="form.endDate" class="border p-2 rounded">
+                </div>
+                <button 
+                  class="text-white border-0 py-2 px-8 focus:outline-none rounded text-lg"
+                  :class="{
+                    'bg-indigo-500 hover:bg-indigo-600': !form.processing,
+                    'bg-gray-400 cursor-not-allowed': form.processing
+                  }"
+                  :disabled="form.processing"
+                >
+                  {{ form.processing ? '送信中...' : '分析する' }}
+                </button>
+              </form>
+
             </div>
 
             <Chart :data="data" />
+            <ResultTable :data="data" />
 
-            <div class="lg:w-2/3 w-full mx-auto overflow-auto" v-show="data.data">
-              <table class="table-auto w-full text-left whitespace-no-wrap">
-                <thead>
-                  <tr>
-                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">期間</th>
-                    <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">金額</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="item in data.data" :key="item.date">
-                    <td class="border-b-2 border-gray-200 px-4 py-3">{{ formatDate(item.date) }}</td>
-                    <td class="border-b-2 border-gray-200 px-4 py-3">{{ Number(item.total).toLocaleString('ja-JP', { style: 'currency', currency: 'JPY' }) }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
       </div>
