@@ -18,7 +18,21 @@ onMounted(() => {
 const form = useForm({
   startDate: null,
   endDate: null,
-  type: 'perDay'
+  type: 'perDay',
+  rfmPrms: [
+    14,
+    28,
+    60,
+    90,
+    7,
+    5,
+    3,
+    2,
+    300000,
+    200000,
+    100000,
+    30000
+  ]
 })
 
 const data = ref({
@@ -136,6 +150,7 @@ const getData = async () => {
               <input type="radio" v-model="form.type" id="perMonth" value="perMonth"><label class="mr-4 ml-1" for="perMonth">月別</label>
               <input type="radio" v-model="form.type" id="perYear" value="perYear"><label class="mr-4 ml-1" for="perYear">年別</label>
               <input type="radio" v-model="form.type" id="decile" value="decile"><label class="mr-4 ml-1" for="decile">デシル分析</label>
+              <input type="radio" v-model="form.type" id="rfm" value="rfm"><label class="mr-4 ml-1" for="rfm">RFM分析</label>
             </div>
             <div class="flex justify-center items-center mb-4">
 
@@ -225,9 +240,72 @@ const getData = async () => {
                   }"
                   :disabled="form.processing"
                 >
-                  {{ form.processing ? '送信中...' : '分析する' }}
+                  {{ form.processing ? '送信中...' : 'デシル分析' }}
                 </button>
               </form>
+
+              <!-- RFM分析検索 -->
+              <div class="flex flex-col items-center space-y-4" v-if="form.type === 'rfm'">
+                <!-- RFM分析検索 -->
+                <form @submit.prevent="getData" class="w-full space-y-4">
+                  <div class="flex flex-wrap items-center space-x-4 justify-center">
+                    <div class="flex items-center space-x-2">
+                      <label for="startDate" class="font-bold">From:</label>
+                      <input type="date" id="startDate" name="startDate" v-model="form.startDate" class="border p-2 rounded">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                      <label for="endDate" class="font-bold">To:</label>
+                      <input type="date" id="endDate" name="endDate" v-model="form.endDate" class="border p-2 rounded">
+                    </div>
+                  </div>
+
+                  <table class="table-auto w-full border-collapse border border-gray-300">
+                    <thead>
+                      <tr class="bg-gray-100">
+                        <th class="border border-gray-300 px-4 py-2">ランク</th>
+                        <th class="border border-gray-300 px-4 py-2">R (最新購入日)</th>
+                        <th class="border border-gray-300 px-4 py-2">F (購入回数)</th>
+                        <th class="border border-gray-300 px-4 py-2">M (購入合計金額)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="border border-gray-300 px-4 py-2 text-center">5</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-20" type="number" v-model="form.rfmPrms[0]">日以内</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-20" type="number" v-model="form.rfmPrms[4]">回以上</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-32" type="number" v-model="form.rfmPrms[8]">円以上</td>
+                      </tr>
+                      <tr>
+                        <td class="border border-gray-300 px-4 py-2 text-center">4</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-20" type="number" v-model="form.rfmPrms[1]">日以内</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-20" type="number" v-model="form.rfmPrms[5]">回以上</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-32" type="number" v-model="form.rfmPrms[9]">円以上</td>
+                      </tr>
+                      <tr>
+                        <td class="border border-gray-300 px-4 py-2 text-center">3</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-20" type="number" v-model="form.rfmPrms[2]">日以内</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-20" type="number" v-model="form.rfmPrms[6]">回以上</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-32" type="number" v-model="form.rfmPrms[10]">円以上</td>
+                      </tr>
+                      <tr>
+                        <td class="border border-gray-300 px-4 py-2 text-center">2</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-20" type="number" v-model="form.rfmPrms[3]">日以内</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-20" type="number" v-model="form.rfmPrms[7]">回以上</td>
+                        <td class="border border-gray-300 px-4 py-2 text-center"><input class="w-32" type="number" v-model="form.rfmPrms[11]">円以上</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="flex justify-center">
+                    <button 
+                      class="bg-indigo-500 hover:bg-indigo-600 text-white border-0 py-2 px-8 rounded text-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      :disabled="form.processing"
+                    >
+                      {{ form.processing ? '送信中...' : 'RFM分析' }}
+                    </button>
+                  </div>
+                </form>
+              </div>
 
             </div>
 
