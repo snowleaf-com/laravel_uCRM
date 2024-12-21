@@ -1,6 +1,7 @@
 <script setup>
 
 import dayjs from 'dayjs';
+import BubbleChart from './BubbleChart.vue';
 
 const props = defineProps({
   data: Object
@@ -85,6 +86,7 @@ const formatDate = (val) => {
     </table>
 
     <h3 class="text-xl mt-8">RFM散布図</h3>
+    <BubbleChart :data="data" />
     <table class="table-auto w-full text-left whitespace-no-wrap">
       <thead>
         <tr>
