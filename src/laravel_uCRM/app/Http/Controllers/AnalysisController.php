@@ -174,6 +174,7 @@ class AnalysisController extends Controller
       100000,
       30000
     ];
+    // 3. 会員毎のRFMランクを計算
     $subQuery = DB::table($subQuery)
       ->selectRaw('
     customer_id,
@@ -204,17 +205,25 @@ class AnalysisController extends Controller
     ', $rfmPrms);
 
     // 4.ランク毎の数を計算する
-    $total = DB::table($subQuery)->count();
+    $totals = DB::table($subQuery)->count();
 
-    $rCount = DB::table($subQuery)->groupBy('r')
-      ->selectRaw('r, count(r)')->orderBy('r', 'desc')
-      ->pluck('count(r)');
-    $fCount = DB::table($subQuery)->groupBy('f')
-      ->selectRaw('f, count(f)')->orderBy('f', 'desc')
-      ->pluck('count(f)');
-    $mCount = DB::table($subQuery)->groupBy('m')
-      ->selectRaw('m, count(m)')->orderBy('m', 'desc')
-      ->pluck('count(m)');
+    $rCount = DB::table($subQuery)
+    ->rightJoin('ranks', 'ranks.rank', '=', 'r')
+    ->selectRaw('ranks.rank as r, count(r)')
+    ->groupBy('rank')
+    ->orderBy('r', 'desc')
+    ->pluck('count(r)');
+
+    $fCount = DB::table($subQuery)
+    ->selectRaw('ranks.rank as f, count(f)')->orderBy('f', 'desc')
+    ->rightJoin('ranks', 'ranks.rank', '=', 'f')->groupBy('rank')
+    ->pluck('count(f)');
+
+    $mCount = DB::table($subQuery)
+    ->rightJoin('ranks', 'ranks.rank', '=', 'm')
+    ->selectRaw('ranks.rank as m, count(m)')->orderBy('m', 'desc')
+    ->groupBy('rank')
+    ->pluck('count(m)');
 
     $eachCount = [];
     $rank = 5;
@@ -235,19 +244,20 @@ class AnalysisController extends Controller
     // dd($total, $eachCount, $rCount, $fCount, $mCount);
 
     // concatで文字列結合
-    // 6. RとFで2次元で表示してみる
+    // 5. RとFで2次元で表示してみる
     $data = DB::table($subQuery)
-      ->groupBy('r')
+      ->rightJoin('ranks', 'ranks.rank', '=', 'r')
       ->selectRaw('
-    concat("r_", r) as rRank, 
+    concat("r_", ranks.rank) as rRank, 
     count(case when f = 5 then 1 end ) as f_5, 
     count(case when f = 4 then 1 end ) as f_4, 
     count(case when f = 3 then 1 end ) as f_3, 
     count(case when f = 2 then 1 end ) as f_2, 
     count(case when f = 1 then 1 end ) as f_1
     ')->orderBy('rRank', 'desc')
+      ->groupBy('rank')
       ->get();
-
+      
     // dd($data);
 
   }
