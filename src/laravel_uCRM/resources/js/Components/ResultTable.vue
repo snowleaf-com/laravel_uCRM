@@ -62,4 +62,50 @@ const formatDate = (val) => {
       </tbody>
     </table>
   </div>
+  <div class="lg:w-2/3 w-full mx-auto overflow-auto mt-8" v-if="data.type === 'rfm'">
+    <h2 class="text-2xl text-center">合計人数 {{ data.totals }}人</h2>
+    <h3 class="text-xl">RFMごとの人数</h3>
+    <table class="table-auto w-full text-left whitespace-no-wrap">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">Rank</th>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">R</th>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">F</th>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">M</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="rfm in data.eachCount" :key="rfm.rank">
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rfm.rank }}</td>
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rfm.r }}</td>
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rfm.f }}</td>
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rfm.m }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="text-xl mt-8">RFM散布図</h3>
+    <table class="table-auto w-full text-left whitespace-no-wrap">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">rRank</th>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_5</th>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_4</th>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_3</th>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_2</th>
+          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_1</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="rf in data.data" :key="rf.rank">
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.rRank }}</td>
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_5 }}</td>
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_4 }}</td>
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_3 }}</td>
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_2 }}</td>
+          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_1 }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
