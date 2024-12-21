@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "chart.js": "^3.9.1",
+        "chartjs-plugin-annotation": "^2.2.1",
         "dayjs": "^1.11.5",
         "micromodal": "^0.4.10",
         "vue-chart-3": "^3.1.8",
