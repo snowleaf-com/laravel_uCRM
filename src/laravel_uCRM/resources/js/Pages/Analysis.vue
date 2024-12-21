@@ -100,7 +100,8 @@ const getData = async () => {
       params: {
         startDate: adjustedStartDate.value,
         endDate: adjustedEndDate.value,
-        type: form.type
+        type: form.type,
+        rfmPrms: form.rfmPrms
       }
     }).then( res => {
       data.value.data = res.data.data
@@ -121,10 +122,12 @@ const getData = async () => {
         data.value.labels = res.data.labels.map((label) =>
           dayjs(label).format('YYYY')
         );
+      } else if (form.type === 'rfm') {
+        data.value.eachCount = res.data.eachCount;
       }
 
       // デバッグ用にデータ確認
-      console.log('data:', data.value.labels);
+      console.log('data:', data.value);
     })
   } catch(e) {
     console.log(e.message)
@@ -308,8 +311,9 @@ const getData = async () => {
               </div>
 
             </div>
-
-            <Chart :data="data" />
+            <div v-if="data.type != 'rfm'">
+              <Chart :data="data" />
+            </div>
             <ResultTable :data="data" />
 
           </div>
