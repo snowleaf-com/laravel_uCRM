@@ -45,6 +45,7 @@ class RFMService
     when ? <= frequency then 3 
     when ? <= frequency then 2 
     else 1 end as f,
+    
     case
     when ? <= monetary then 5 
     when ? <= monetary then 4 
@@ -96,18 +97,41 @@ class RFMService
 
     // concatで文字列結合
     // 5. RとFで2次元で表示してみる
+    // $data = DB::table($subQuery)
+    //   ->rightJoin('ranks', 'ranks.rank', '=', 'r')
+    //   ->selectRaw('
+    // concat("r_", ranks.rank) as rRank, 
+    // count(case when f = 5 then 1 end ) as f_5, 
+    // count(case when f = 4 then 1 end ) as f_4, 
+    // count(case when f = 3 then 1 end ) as f_3, 
+    // count(case when f = 2 then 1 end ) as f_2, 
+    // count(case when f = 1 then 1 end ) as f_1
+    // ')->orderBy('rRank', 'desc')
+    //   ->groupBy('rank')
+    //   ->get();
+
     $data = DB::table($subQuery)
-      ->rightJoin('ranks', 'ranks.rank', '=', 'r')
-      ->selectRaw('
-    concat("r_", ranks.rank) as rRank, 
-    count(case when f = 5 then 1 end ) as f_5, 
-    count(case when f = 4 then 1 end ) as f_4, 
-    count(case when f = 3 then 1 end ) as f_3, 
-    count(case when f = 2 then 1 end ) as f_2, 
-    count(case when f = 1 then 1 end ) as f_1
-    ')->orderBy('rRank', 'desc')
-      ->groupBy('rank')
-      ->get();
+      ->leftJoin('ranks as r_rank', 'r_rank.rank', '=', 'r')
+      ->leftJoin(
+        'ranks as f_rank',
+        'f_rank.rank',
+        '=',
+        'f'
+      )
+      ->leftJoin(
+        'ranks as m_rank',
+        'm_rank.rank',
+        '=',
+        'm'
+      )
+      ->selectRaw(
+        '
+        r_rank.rank as r, 
+        f_rank.rank as f,
+        m_rank.rank as m,
+        COALESCE(count(*), 0) as count'  // NULLの場合は0にする
+      )
+      ->groupBy('r', 'f', 'm')->get();
 
     return [$data, $totals, $eachCount];
   }

@@ -1,6 +1,7 @@
 <script setup>
 
 import dayjs from 'dayjs';
+import BubbleChart from './BubbleChart.vue';
 
 const props = defineProps({
   data: Object
@@ -85,27 +86,6 @@ const formatDate = (val) => {
     </table>
 
     <h3 class="text-xl mt-8">RFM散布図</h3>
-    <table class="table-auto w-full text-left whitespace-no-wrap">
-      <thead>
-        <tr>
-          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">rRank</th>
-          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_5</th>
-          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_4</th>
-          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_3</th>
-          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_2</th>
-          <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">f_1</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="rf in data.data" :key="rf.rank">
-          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.rRank }}</td>
-          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_5 }}</td>
-          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_4 }}</td>
-          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_3 }}</td>
-          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_2 }}</td>
-          <td class="border-b-2 border-gray-200 px-4 py-3">{{ rf.f_1 }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <BubbleChart :data="data" />
   </div>
 </template>
